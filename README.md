@@ -1,28 +1,68 @@
-# Codes for the project *Crystallography, Group Cohomology, and Lieb–Schultz–Mattis Constraints* 
-# 
+# SpaceGroupCohomology — a GAP package
 
-[![arXiv](https://img.shields.io/badge/arXiv-2410.03607-b31b1b.svg)](https://arxiv.org/abs/2410.03607)
+Mod-2 cohomology rings and Lieb–Schultz–Mattis anomaly classes for the
+230 crystallographic space groups.
 
-## Content
+Reference: Chunxiao Liu and Weicheng Ye, *Crystallography, group cohomology,
+and Lieb–Schultz–Mattis constraints*, SciPost Phys. **18**, 161 (2025)
+([arXiv:2410.03607](https://arxiv.org/abs/2410.03607)).
 
-This repository contains the following three parts
+## Installation
 
-### GAP codes
+Copy or symlink this directory into a path on your GAP `pkg/` search list,
+typically `~/.gap/pkg/SpaceGroupCohomology/`:
 
-Read both SpaceGroupCohomologyData.gi and SpaceGroupCohomologyFunctions.gi
-Main command that outputs the mod-2 cohomology and LSM anomaly classes:
-SpaceGroupCohomologyRingGapInterface(IT);
-where IT is the numbering of the space group (1<=IT<=230).
+```bash
+mkdir -p ~/.gap/pkg
+ln -s "$(pwd)/SpaceGroupCohomology" ~/.gap/pkg/SpaceGroupCohomology
+```
 
-### Mathematica codes
+The package depends on [HAP](https://gap-packages.github.io/hap/) (≥ 1.30),
+which is loaded automatically.
 
-Space_Group_Cohomology_Data.nb contains the standard inhomogeneous functions for the 1-,2-, and 3-cocycles (except for No. 225, 227, and 229)
-Execute the "Preparations" section first.
+## Usage
 
-### Sage codes
+```gap
+gap> LoadPackage("SpaceGroupCohomology");
+true
+gap> SpaceGroupCohomologyRingGapInterface(191);   # any IT number in 1..230
+```
 
-Codes to obtain the explicit cochain representatives for degree-3 generators of several complicated space groups
+That single call prints the mod-2 cohomology ring presentation and the
+LSM anomaly classes for the given space group.
 
+## Layout
+
+```
+SpaceGroupCohomology/
+├── PackageInfo.g       package metadata + HAP dependency
+├── init.g              forward declarations of data globals
+├── read.g              reads gap/data.gi then gap/functions.gi
+├── gap/
+│   ├── data.gi         PGGens230, IWP, GENNAMES, funcs230 (230 entries each)
+│   └── functions.gi    library of cohomology-ring routines
+└── tst/
+    └── smoke.tst       package self-test (Test or TestPackage)
+```
+
+## Testing
+
+`tst/smoke.tst` does two things in order:
+
+1. A constant-time sanity check that all four data tables have 230 entries.
+2. Three real cohomology computations — space groups No. 1, 16, 89 — that
+   exercise the full HAP-backed pipeline end-to-end and pin down the
+   expected output. Any regression in the cup product, relations, or
+   LSM-class code will then surface as a `Test` failure instead of passing
+   silently.
+
+```gap
+gap> TestPackage("SpaceGroupCohomology");
+```
+
+The first item is instantaneous; the three computations take a few seconds
+to ~30 s total on a modern laptop, with group 89 (tetragonal `P4/mmm`) the
+slowest of the three.
 
 ## Reference
 
